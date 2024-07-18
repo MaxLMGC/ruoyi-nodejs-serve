@@ -1,0 +1,31 @@
+/**
+ * 文件类型: 后端-控制文件
+ * 文件路径: @/models/<%= moduleName %>/<%= businessName %>.js
+ * 文件创建日期: <%= now %>
+ * 文件作者: <%= functionAuthor %>
+ */
+const { DataTypes, Model } = require('sequelize');
+const sequelize = require('@/config/sequelize');
+const { formatDate } = require('@/utils/formatter');
+
+class <%= BusinessName %> extends Model { }
+
+<%= BusinessName %>.init({
+<% columns.forEach(column => { -%>
+    <%= column.javaScriptField %>: {
+        type: DataTypes.<%= column.javaScriptType.toUpperCase() %>,
+        <%if(column.autoIncrement){%>autoIncrement:true,<%}-%>
+        <% if (column.isPk == '1') { %>primaryKey: true,<% } -%>
+        <% if (column.defaultValue !== undefined) { %>defaultValue: <%= JSON.stringify(column.defaultValue) %>,<% } -%>
+        <% if (column.columnComment) { %>comment: '<%= column.columnComment %>',<% } -%>
+        field: '<%= column.columnName %>'
+    },
+<% }); -%>
+}, {
+    sequelize,
+    modelName: '<%= BusinessName %>',
+    tableName: '<%= tableName %>',
+    timestamps: false,
+});
+
+module.exports = <%= BusinessName %>;

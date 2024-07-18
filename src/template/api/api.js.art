@@ -1,0 +1,50 @@
+/**
+ * 文件类型: 前端文件-接口文件
+ * 文件路径: @/api/<%= moduleName %>/<%= businessName %>.js
+ * 文件创建日期: <%= now %>
+ * 文件作者: <%= functionAuthor %>
+ */
+import request from '@/utils/request'
+
+// 查询<%= functionName %>列表
+export function list<%= ClassName %>(query) {
+  return request({
+    url: '/<%= moduleName %>/<%= businessName %>/list',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询<%= functionName %>详细
+export function get<%= ClassName %>(<%= primaryKey %>) {
+  return request({
+    url: '/<%= moduleName %>/<%= businessName %>/' + <%= primaryKey %>,
+    method: 'get'
+  })
+}
+
+// 新增<%= functionName %>
+export function add<%= ClassName %>(data) {
+  return request({
+    url: '/<%= moduleName %>/<%= businessName %>',
+    method: 'post',
+    data: data
+  })
+}
+
+// 修改<%= functionName %>
+export function update<%= ClassName %>(data) {
+  return request({
+    url: '/<%= moduleName %>/<%= businessName %>',
+    method: 'put',
+    data: data
+  })
+}
+
+// 删除<%= functionName %>
+export function del<%= ClassName %>(<%= primaryKey %>) {
+  return request({
+    url: '/<%= moduleName %>/<%= businessName %>/' + <%= primaryKey %>,
+    method: 'delete'
+  })
+}

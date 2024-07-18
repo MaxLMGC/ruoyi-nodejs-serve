@@ -1,0 +1,122 @@
+/**
+ * 文件类型: 后端-服务文件
+ * 文件路径: @/modules/<%= moduleName %>/<%= businessName %>/<%= businessName %>.service.js
+ * 文件创建日期: <%= now %>
+ * 文件作者: <%= functionAuthor %>
+ */
+const sequelize = require('@/config/sequelize');
+const { Op } = require('sequelize');
+const <%= BusinessName %> = require('@/models/<%= moduleName %>/<%= BusinessName %>');
+
+// 获取所有<%= functionName %>详细信息（包含事务）
+const getAll<%= BusinessName %>s = async () => {
+    const transaction = await sequelize.transaction();
+    try {
+        const <%= businessName %>s = await <%= BusinessName %>.findAll({ transaction });
+
+        await transaction.commit();
+
+        return <%= businessName %>s.map(<%= businessName %> => <%= businessName %>.toJSON());
+    } catch (error) {
+        if (transaction) await transaction.rollback();
+        throw error;
+    }
+};
+
+const list<%= BusinessName %>s = async (filters = {}, pageNum = 1, pageSize = 10) => {
+    const transaction = await sequelize.transaction();
+    try {
+        const where = {};
+        const { Op } = require('sequelize');
+
+        <% columns.forEach(column => { if (column.isQuery === "1") { %>
+        if (filters.<%= column.javaScriptField %>) {
+            where.<%= column.javaScriptField %> = {
+                <% if (column.queryType === 'EQ') { %>[Op.eq]: filters.<%= column.javaScriptField %><% } %>
+                <% if (column.queryType === 'NE') { %>[Op.ne]: filters.<%= column.javaScriptField %><% } %>
+                <% if (column.queryType === 'GT') { %>[Op.gt]: filters.<%= column.javaScriptField %><% } %>
+                <% if (column.queryType === 'GTE') { %>[Op.gte]: filters.<%= column.javaScriptField %><% } %>
+                <% if (column.queryType === 'LT') { %>[Op.lt]: filters.<%= column.javaScriptField %><% } %>
+                <% if (column.queryType === 'LTE') { %>[Op.lte]: filters.<%= column.javaScriptField %><% } %>
+                <% if (column.queryType === 'LIKE') { %>[Op.like]: `%${filters.<%= column.javaScriptField %>}%`<% } %>
+                <% if (column.queryType === 'BETWEEN') { %>[Op.between]: [filters.params.begin<%= column.javaScriptField.charAt(0).toUpperCase() + column.javaScriptField.slice(1) %>, filters.params.end<%= column.javaScriptField.charAt(0).toUpperCase() + column.javaScriptField.slice(1) %>]<% } %>
+            };
+        }
+        <% } }); %>
+
+        const <%= businessName %>s = await <%= BusinessName %>.findAndCountAll({
+            where,
+            offset: (pageNum - 1) * pageSize,
+            limit: pageSize,
+            order: [['<%= columns.find(column => column.isList === "1").javaScriptField %>', 'ASC']],
+            transaction
+        });
+
+        await transaction.commit();
+        return {
+            total: <%= businessName %>s.count,
+            rows: <%= businessName %>s.rows
+        };
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+};
+
+
+const get<%= BusinessName %>ById = async (<%= primaryKey %>) => {
+    const transaction = await sequelize.transaction();
+    try {
+        const <%= businessName %> = await <%= BusinessName %>.findByPk(<%= primaryKey %>, { transaction });
+        await transaction.commit();
+        return <%= businessName %> ? <%= businessName %>.toJSON() : null;
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+};
+
+const add<%= BusinessName %> = async (<%= businessName %>Data, user) => {
+    const transaction = await sequelize.transaction();
+    try {
+        const <%= businessName %> = await <%= BusinessName %>.create(<%= businessName %>Data, { transaction, user });
+        await transaction.commit();
+        return <%= businessName %>;
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+};
+
+const update<%= BusinessName %> = async (<%= primaryKey %>, <%= businessName %>Data, user) => {
+    const transaction = await sequelize.transaction();
+    try {
+        await <%= BusinessName %>.update(<%= businessName %>Data, { where: { <%= primaryKey %> }, transaction, user });
+        await transaction.commit();
+        return true;
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+};
+
+const delete<%= BusinessName %> = async (<%= primaryKey %>) => {
+    const transaction = await sequelize.transaction();
+    try {
+        await <%= BusinessName %>.destroy({ where: { <%= primaryKey %> }, transaction });
+        await transaction.commit();
+        return true;
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+};
+
+module.exports = {
+    getAll<%= BusinessName %>s,
+    list<%= BusinessName %>s,
+    get<%= BusinessName %>ById,
+    add<%= BusinessName %>,
+    update<%= BusinessName %>,
+    delete<%= BusinessName %>
+};

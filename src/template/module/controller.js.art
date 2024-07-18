@@ -1,0 +1,76 @@
+/**
+ * 文件类型: 后端-controller文件
+ * 文件路径: @/modules/<%= moduleName %>/<%= businessName %>/<%= businessName %>.controller.js
+ * 文件创建日期: <%= now %>
+ * 文件作者: <%= functionAuthor %>
+ */
+const <%= BusinessName %>Service = require('./<%= businessName %>.service');
+const { sendSuccess, sendError } = require('@/utils/response');
+const errorCodes = require('@/utils/error');
+
+// 查询<%= functionName %>列表
+exports.list<%= BusinessName %>s = async (req, res) => {
+  try {
+    const { pageNum, pageSize, ...filters } = req.query;
+    const data = await <%= BusinessName %>Service.list<%= BusinessName %>s(filters, Number(pageNum), Number(pageSize));
+    sendSuccess(res, data);
+  } catch (error) {
+    console.error('查询<%= functionName %>列表时出错:', error);
+    sendError(res, errorCodes.INTERNAL_SERVER_ERROR);
+  }
+};
+
+// 查询<%= functionName %>详细
+exports.get<%= BusinessName %> = async (req, res) => {
+  try {
+    const { <%= primaryKey %> } = req.params;
+
+    const <%= businessName %> = await <%= BusinessName %>Service.get<%= BusinessName %>ById(<%= primaryKey %>);
+    if (!<%= businessName %>) {
+      return sendError(res, errorCodes.NOT_FOUND);
+    }
+    sendSuccess(res, {
+      data: <%= businessName %>
+    });
+  } catch (error) {
+    console.error('查询<%= functionName %>详细时出错:', error);
+    sendError(res, errorCodes.INTERNAL_SERVER_ERROR);
+  }
+};
+
+// 新增<%= functionName %>
+exports.add<%= BusinessName %> = async (req, res) => {
+  try {
+    const user = req.user.userName; // 假设用户信息在 req.user 中
+    const <%= businessName %> = await <%= BusinessName %>Service.add<%= BusinessName %>(req.body, user);
+    sendSuccess(res, <%= businessName %>);
+  } catch (error) {
+    console.error('新增<%= functionName %>时出错:', error);
+    sendError(res, errorCodes.INTERNAL_SERVER_ERROR);
+  }
+};
+
+// 修改<%= functionName %>
+exports.update<%= BusinessName %> = async (req, res) => {
+  try {
+    const user = req.user.userName; // 假设用户信息在 req.user 中
+    const { <%= primaryKey %> } = req.body;
+    await <%= BusinessName %>Service.update<%= BusinessName %>(<%= primaryKey %>, req.body, user);
+    sendSuccess(res, { msg: '更新成功' });
+  } catch (error) {
+    console.error('修改<%= functionName %>时出错:', error);
+    sendError(res, errorCodes.INTERNAL_SERVER_ERROR);
+  }
+};
+
+// 删除<%= functionName %>
+exports.delete<%= BusinessName %> = async (req, res) => {
+  try {
+    const { <%= primaryKey %> } = req.params;
+    await <%= BusinessName %>Service.delete<%= BusinessName %>(<%= primaryKey %>);
+    sendSuccess(res, { msg: '删除成功' });
+  } catch (error) {
+    console.error('删除<%= functionName %>时出错:', error);
+    sendError(res, errorCodes.INTERNAL_SERVER_ERROR);
+  }
+};

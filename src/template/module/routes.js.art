@@ -1,0 +1,327 @@
+/**
+ * 文件类型: 后端-路由文件
+ * 文件路径: @/modules/<%= moduleName %>/<%= businessName %>/<%= businessName %>.routes.js
+ * 文件创建日期: <%= now %>
+ * 文件作者: <%= functionAuthor %>
+ */
+const express = require('express');
+const router = express.Router();
+const <%= BusinessName %>Controller = require('./<%= businessName %>.controller');
+const { Permissions } = require('@/middlewares/auth.middleware');
+
+/**
+ * @swagger
+ * /<%= moduleName %>/<%= businessName %>/list:
+ *   get:
+ *     summary: 查询<%= functionName %>列表
+ *     description: 获取<%= functionName %>列表并分页
+ *     tags: [<%= BusinessName %>]
+ *     parameters:
+ *       - in: query
+ *         name: pageNum
+ *         schema:
+ *           type: integer
+ *         description: 页码
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *           type: integer
+ *         description: 每页条数
+<% columns.forEach(column => { if (column.isQuery) { %>
+ *       - in: query
+ *         name: <%= column.javaField %>
+ *         schema:
+ *           type: <%= column.javaScriptType.toLowerCase() %>
+ *         description: <%= column.columnComment %>
+<% } }); %>
+ *     responses:
+ *       200:
+ *         description: 操作成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 200
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: 操作成功
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                       description: 总条数
+ *                     rows:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+<% columns.forEach(column => { %>
+ *                           <%= column.javaField %>:
+ *                             type: <%= column.javaScriptType.toLowerCase() %>
+ *                             description: <%= column.columnComment %>
+<% }); %>
+ *       500:
+ *         description: 服务器内部错误
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 500
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: 服务器内部错误
+ */
+router.get('/list', Permissions(), <%= BusinessName %>Controller.list<%= BusinessName %>s);
+
+/**
+ * @swagger
+ * /<%= moduleName %>/<%= businessName %>/{<%= primaryKey %>}:
+ *   get:
+ *     summary: 查询<%= functionName %>详细
+ *     description: 根据ID查询<%= functionName %>详细
+ *     tags: [<%= BusinessName %>]
+ *     parameters:
+ *       - in: path
+ *         name: <%= primaryKey %>
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: <%= functionName %>ID
+ *     responses:
+ *       200:
+ *         description: 操作成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 200
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: 操作成功
+ *                 data:
+ *                   type: object
+ *                   properties:
+<% columns.forEach(column => { %>
+ *                     <%= column.javaField %>:
+ *                       type: <%= column.javaScriptType.toLowerCase() %>
+ *                       description: <%= column.columnComment %>
+<% }); %>
+ *       404:
+ *         description: <%= functionName %>未找到
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 404
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: <%= functionName %>未找到
+ *       500:
+ *         description: 服务器内部错误
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 500
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: 服务器内部错误
+ */
+router.get('/:<%= businessName %>Id', Permissions(), <%= BusinessName %>Controller.get<%= BusinessName %>);
+
+/**
+ * @swagger
+ * /<%= moduleName %>/<%= businessName %>:
+ *   post:
+ *     summary: 新增<%= functionName %>
+ *     description: 新增<%= functionName %>信息
+ *     tags: [<%= BusinessName %>]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+<% columns.forEach(column => { if (!column.isPk && column.isInsert) { %>
+ *               <%= column.javaField %>:
+ *                 type: <%= column.javaScriptType.toLowerCase() %>
+ *                 description: <%= column.columnComment %>
+<% } }); %>
+ *     responses:
+ *       200:
+ *         description: 操作成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 200
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: 操作成功
+ *       500:
+ *         description: 服务器内部错误
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 500
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: 服务器内部错误
+ */
+router.post('/', Permissions(), <%= BusinessName %>Controller.add<%= BusinessName %>);
+
+/**
+ * @swagger
+ * /<%= moduleName %>/<%= businessName %>:
+ *   put:
+ *     summary: 修改<%= functionName %>
+ *     description: 修改<%= functionName %>信息
+ *     tags: [<%= BusinessName %>]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+<% columns.forEach(column => { if (column.isEdit) { %>
+ *               <%= column.javaField %>:
+ *                 type: <%= column.javaScriptType.toLowerCase() %>
+ *                 description: <%= column.columnComment %>
+<% } }); %>
+ *     responses:
+ *       200:
+ *         description: 操作成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 200
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: 操作成功
+ *       500:
+ *         description: 服务器内部错误
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 500
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: 服务器内部错误
+ */
+router.put('/', Permissions(),<%= BusinessName %>Controller.update<%= BusinessName %>);
+
+/**
+ * @swagger
+ * /<%= moduleName %>/<%= businessName %>/{<%= primaryKey %>}:
+ *   delete:
+ *     summary: 删除<%= functionName %>
+ *     description: 根据ID删除<%= functionName %>
+ *     tags: [<%= BusinessName %>]
+ *     parameters:
+ *       - in: path
+ *         name: <%= primaryKey %>
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: <%= functionName %>ID
+ *     responses:
+ *       200:
+ *         description: 操作成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 200
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: 操作成功
+ *       404:
+ *         description: <%= functionName %>未找到
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 404
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: <%= functionName %>未找到
+ *       500:
+ *         description: 服务器内部错误
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   description: 状态码
+ *                   example: 500
+ *                 msg:
+ *                   type: string
+ *                   description: 信息
+ *                   example: 服务器内部错误
+ */
+router.delete('/:<%= businessName %>Id', Permissions(), <%= BusinessName %>Controller.delete<%= BusinessName %>);
+
+module.exports = router;

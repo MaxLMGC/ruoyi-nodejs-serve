@@ -1,0 +1,8 @@
+/**
+ * 文件类型: 后端-主路由文件
+ * 文件创建日期: <%= now %>
+ * 文件作者: <%= functionAuthor %>
+ */
+// 将下面这两句代码添加到@/routes/index.js文件中
+const <%= businessName %>Routes = require('@/modules/<%= moduleName %>/<%= businessName %>/<%= businessName %>.routes'); 
+router.use('/<%= moduleName %>/<%= businessName %>', <%= businessName %>Routes);

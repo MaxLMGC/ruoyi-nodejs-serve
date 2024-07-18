@@ -1,0 +1,14 @@
+# Node.js
+node_modules/
+
+# dotenv environment variables file
+.env
+
+# IDE files
+.vscode/
+
+# NPM package lock file
+package-lock.json
+
+# Skyclear Serve specific
+/public/uploads/
