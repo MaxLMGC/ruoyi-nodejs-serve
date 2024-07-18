@@ -10,5 +10,5 @@ node_modules/
 # NPM package lock file
 package-lock.json
 
-# Skyclear Serve specific
-/public/uploads/
+# uploads
+src/public/uploads/*

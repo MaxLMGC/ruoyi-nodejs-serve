@@ -20,6 +20,8 @@ const getDiskStorage = (uploadDir) => multer.diskStorage({
 // 文件过滤器
 const getFileFilter = (fileTypes) => async (req, file, cb) => {
     try {
+        if (fileTypes.length === 0) return cb(null, true);
+
         const type = mime.lookup(file.originalname);
         const validTypes = fileTypes.map(ext => mime.lookup(ext));
 

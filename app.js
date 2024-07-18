@@ -16,6 +16,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // 使用全局路由
 app.use('/', routes);
+// 文件夹路由
+app.use('/public/uploads', express.static('./src/public/uploads'));
 
 // Swagger文档
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
@@ -23,7 +25,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use((err, req, res, next) => {
     sendError(res, {
         code: err.status || errorCodes.INTERNAL_SERVER_ERROR.code,
-        message: err.message || errorCodes.INTERNAL_SERVER_ERROR.message
+        msg: err.message || errorCodes.INTERNAL_SERVER_ERROR.message
     });
 });
 

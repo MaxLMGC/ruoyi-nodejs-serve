@@ -16,14 +16,18 @@ const deptRoutes = require('@/modules/system/dept/dept.routes');
 const noticeRoutes = require('@/modules/system/notice/notice.routes');
 const operlogRoutes = require('@/modules/monitor/operlog/operlog.routes');
 const logininforRoutes = require('@/modules/monitor/logininfor/logininfor.routes');
-
+const uploadRoutes = require('@/modules/common/upload/upload.routes');
 
 const carouselRoutes = require('@/modules/main/carousel/carousel.routes');
 
-// 注册路由
+
+
+// 登录注册路由
 router.use('/', loginRoutes);
 // 获取路由列表
 router.use('/', menuRouterGetRoutes);
+// 通用路由
+router.use('/common', uploadRoutes)
 // 用户路由
 router.use('/system/user', userRoutes);
 // 角色路由
@@ -48,6 +52,7 @@ router.use('/system/notice', noticeRoutes)
 router.use('/monitor/operlog', operlogRoutes)
 // 操作日志路由
 router.use('/monitor/logininfor', logininforRoutes)
+
 
 // 轮播图路由
 router.use('/main/carousel', carouselRoutes);
